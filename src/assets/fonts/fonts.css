@@ -1,0 +1,8 @@
+
+@font-face {
+  font-family: "Atyp Display";
+  src: url("./AtypDisplay-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}

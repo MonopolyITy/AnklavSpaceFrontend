@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "Atyp Display";
+  src: url("/fonts/AtypDisplay-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Atyp Text";
+  src: url("/fonts/AtypText-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-display {
+  font-family: "Atyp Display", system-ui, sans-serif;
+}
+
+.font-text {
+  font-family: "Atyp Text", system-ui, sans-serif;
+}

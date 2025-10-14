@@ -30,6 +30,13 @@ button, input, textarea {
   outline: none;
 }
 
+:root{
+	--tg-app-top: calc(
+		var(--tg-safe-area-inset-top, 0px) +
+		var(--tg-content-safe-area-inset-top, 0px)
+	);
+  }
+
 body {
   font-family: "Atyp Text", system-ui, sans-serif;
   padding-top: var(--tg-app-top);

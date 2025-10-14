@@ -23,6 +23,10 @@ const App = () => {
 
     const contentTimer = setTimeout(() => setShowContent(true), 500);
 
+    const bodyTimer = setTimeout(() => {
+      document.body.style.backgroundColor = 'white';
+    }, 1000);
+
     const loaderTimer = setTimeout(() => {
       setFadeOut(true);
       setTimeout(() => setIsLoading(false), 500);
@@ -31,6 +35,7 @@ const App = () => {
     return () => {
       clearTimeout(contentTimer);
       clearTimeout(loaderTimer);
+      clearTimeout(bodyTimer);
     };
   }, []);
 

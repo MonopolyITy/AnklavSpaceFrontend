@@ -100,12 +100,12 @@ legend {
 
 
 body {
+  background-color: white;
   font-family: "Atyp Text", system-ui, sans-serif;
   padding-top: var(--tg-app-top);
   position: relative;
 }
 
-/* 🎨 Верхняя окрашенная зона */
 body::before {
   content: "";
   position: fixed;

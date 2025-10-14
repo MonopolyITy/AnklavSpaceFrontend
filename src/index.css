@@ -97,10 +97,22 @@ legend {
 		var(--tg-content-safe-area-inset-top, 0px)
 	);
   }
-  
+
 
 body {
-    background-color: #FFFFFF;
-	padding-top: var(--tg-app-top);
-	font-family: sans-serif;
+  font-family: "Atyp Text", system-ui, sans-serif;
+  padding-top: var(--tg-app-top);
+  position: relative;
+}
+
+/* 🎨 Верхняя окрашенная зона */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--tg-app-top);
+  background: #4E4C50;
+  z-index: 9999;
 }

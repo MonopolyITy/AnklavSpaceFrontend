@@ -45,6 +45,8 @@ const App = () => {
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 9999,
+            pointerEvents: 'none',
+            visibility: fadeOut ? 'hidden' : 'visible',
             opacity: fadeOut ? 0 : 1,
             transition: 'opacity 0.5s ease',
           }}>

@@ -8,6 +8,7 @@ const tg = window.Telegram.WebApp;
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {  
     tg.ready();
@@ -20,19 +21,28 @@ const App = () => {
     ////////
     tg.setHeaderColor('#4E4C50');
 
-    const timer = setTimeout(() => {
+    const contentTimer = setTimeout(() => setShowContent(true), 500);
+
+    const loaderTimer = setTimeout(() => {
       setFadeOut(true);
       setTimeout(() => setIsLoading(false), 500);
     }, 2000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(contentTimer);
+      clearTimeout(loaderTimer);
+    };
   }, []);
 
   return (
     <>
       <div style={{ position: 'relative' }}>
-        <Header />
-        <Home />
+        {showContent && (
+          <>
+            <Header />
+            <Home />
+          </>
+        )}
         {isLoading && (
           <div style={{
             position: 'fixed',

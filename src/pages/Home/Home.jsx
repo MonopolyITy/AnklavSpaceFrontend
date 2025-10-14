@@ -17,12 +17,12 @@ const Home = () => {
       </div>
 
       <div style={{marginTop: "20px"}}>
-        <img style={{borderRadius: "5px"}} src="/img/site.png" alt="Banner" loading="lazy" width="100%" height="auto" />
+        <img style={{borderRadius: "5px"}} src="/img/site.webp" alt="Banner" loading="lazy" decoding="async" width="100%" height="auto" />
       </div>
 
       <div style={{display: "flex", justifyContent: "space-between", marginTop: "20px"}}>
-        <img style={{borderRadius: "5px", width: "calc(50% - 5px)"}} src="/img/podcast1.png" alt="Banner" loading="lazy" />
-        <img style={{borderRadius: "5px", width: "calc(50% - 5px)"}} src="/img/podcast2.png" alt="Banner" loading="lazy" />
+        <img style={{borderRadius: "5px", width: "calc(50% - 5px)"}} src="/img/podcast1.webp" alt="Banner" loading="lazy" decoding="async" />
+        <img style={{borderRadius: "5px", width: "calc(50% - 5px)"}} src="/img/podcast2.webp" alt="Banner" loading="lazy" decoding="async" />
       </div>
 
     </div>

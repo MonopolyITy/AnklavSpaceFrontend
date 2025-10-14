@@ -10,7 +10,10 @@ const App = () => {
   const [fadeOut, setFadeOut] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
-  useEffect(() => {  
+  useEffect(() => {
+    // Сразу делаем фон под лоадером
+    document.body.style.backgroundColor = '#4E4C50';
+
     tg.ready();
     tg.expand();
     ////////
@@ -21,14 +24,17 @@ const App = () => {
     ////////
     tg.setHeaderColor('#4E4C50');
 
-    const contentTimer = setTimeout(() => setShowContent(true), 500);
+    // Контент появляется чуть позже, чтобы избежать просачивания
+    const contentTimer = setTimeout(() => setShowContent(true), 1000);
 
+    // Фон меняется на белый чуть раньше исчезновения лоадера
     const bodyTimer = setTimeout(() => {
       document.body.style.backgroundColor = 'white';
-    }, 1000);
+    }, 1500);
 
+    // Плавное исчезновение и удаление
     const fadeTimer = setTimeout(() => setFadeOut(true), 2000);
-    const removeTimer = setTimeout(() => setIsLoading(false), 2500);
+    const removeTimer = setTimeout(() => setIsLoading(false), 2600);
 
     return () => {
       clearTimeout(contentTimer);

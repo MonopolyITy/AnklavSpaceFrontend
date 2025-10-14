@@ -10,7 +10,10 @@ const App = () => {
   const [fadeOut, setFadeOut] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
-  useEffect(() => {  
+  useEffect(() => {
+    // Сразу делаем фон под лоадером
+    document.body.style.backgroundColor = '#4E4C50';
+
     tg.ready();
     tg.expand();
     ////////
@@ -21,21 +24,23 @@ const App = () => {
     ////////
     tg.setHeaderColor('#4E4C50');
 
-    const contentTimer = setTimeout(() => setShowContent(true), 500);
+    // Контент появляется чуть позже, чтобы избежать просачивания
+    const contentTimer = setTimeout(() => setShowContent(true), 1000);
 
+    // Фон меняется на белый чуть раньше исчезновения лоадера
     const bodyTimer = setTimeout(() => {
       document.body.style.backgroundColor = 'white';
-    }, 1000);
+    }, 1500);
 
-    const loaderTimer = setTimeout(() => {
-      setFadeOut(true);
-      setTimeout(() => setIsLoading(false), 500);
-    }, 2000);
+    // Плавное исчезновение и удаление
+    const fadeTimer = setTimeout(() => setFadeOut(true), 2000);
+    const removeTimer = setTimeout(() => setIsLoading(false), 2600);
 
     return () => {
       clearTimeout(contentTimer);
-      clearTimeout(loaderTimer);
       clearTimeout(bodyTimer);
+      clearTimeout(fadeTimer);
+      clearTimeout(removeTimer);
     };
   }, []);
 
@@ -61,9 +66,8 @@ const App = () => {
             justifyContent: 'center',
             zIndex: 9999,
             pointerEvents: 'none',
-            visibility: fadeOut ? 'hidden' : 'visible',
             opacity: fadeOut ? 0 : 1,
-            transition: 'opacity 0.5s ease',
+            transition: 'opacity 0.6s ease',
           }}>
             <Loader />
           </div>

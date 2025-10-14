@@ -27,15 +27,14 @@ const App = () => {
       document.body.style.backgroundColor = 'white';
     }, 1000);
 
-    const loaderTimer = setTimeout(() => {
-      setFadeOut(true);
-      setTimeout(() => setIsLoading(false), 500);
-    }, 2000);
+    const fadeTimer = setTimeout(() => setFadeOut(true), 2000);
+    const removeTimer = setTimeout(() => setIsLoading(false), 2500);
 
     return () => {
       clearTimeout(contentTimer);
-      clearTimeout(loaderTimer);
       clearTimeout(bodyTimer);
+      clearTimeout(fadeTimer);
+      clearTimeout(removeTimer);
     };
   }, []);
 
@@ -61,9 +60,8 @@ const App = () => {
             justifyContent: 'center',
             zIndex: 9999,
             pointerEvents: 'none',
-            visibility: fadeOut ? 'hidden' : 'visible',
             opacity: fadeOut ? 0 : 1,
-            transition: 'opacity 0.5s ease',
+            transition: 'opacity 0.6s ease',
           }}>
             <Loader />
           </div>

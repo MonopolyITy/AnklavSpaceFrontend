@@ -32,4 +32,5 @@ button, input, textarea {
 
 body {
   font-family: "Atyp Text", system-ui, sans-serif;
+  padding-top: var(--tg-app-top);
 }

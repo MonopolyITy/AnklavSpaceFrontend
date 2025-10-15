@@ -1,19 +1,25 @@
 import React, { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Home = () => {
 
-  const navigate = useNavigate();
-  const hasRedirected = useRef(sessionStorage.getItem('shopRedirectHandled') === 'true');
+   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Проверяем, был ли уже редирект выполнен в этой сессии
+  const hasRedirected = useRef(sessionStorage.getItem("startHandled") === "true");
 
 
    useEffect(() => {
+    // Если редирект уже был — ничего не делаем
+    if (hasRedirected.current) return;
+
     const { start_param: startParam } =
       window.Telegram?.WebApp?.initDataUnsafe || {};
 
-    if (!hasRedirected.current && typeof startParam === "string") {
-      // пример: "quizfjskf4dnameVlad"
+    if (typeof startParam === "string") {
+      // пример: quizfjskf4dnameVlad
       const match = startParam.match(/^quiz([a-zA-Z0-9]+)name([a-zA-Z]+)$/);
 
       if (match) {
@@ -24,13 +30,15 @@ const Home = () => {
           hasRedirected.current = true;
           sessionStorage.setItem("startHandled", "true");
 
-          navigate(`/quiz/${roomId}?name=${encodeURIComponent(name)}`, {
-            replace: true,
-          });
+          // Не редиректим, если уже на нужной странице
+          const targetPath = `/quiz/${roomId}?name=${encodeURIComponent(name)}`;
+          if (location.pathname + location.search !== targetPath) {
+            navigate(targetPath, { replace: true });
+          }
         }
       }
     }
-  }, [navigate]);
+  }, [navigate, location]);
 
 
   return (

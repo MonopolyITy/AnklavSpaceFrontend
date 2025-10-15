@@ -55,3 +55,25 @@ export default function Quiz() {
     </div>
   );
 }
+
+
+
+// import React from 'react'
+// import { useParams, useSearchParams } from "react-router-dom";
+
+// const Quiz = () => {
+//     const { roomId } = useParams();
+
+    
+//     const [searchParams] = useSearchParams();
+//     const name = searchParams.get("name") || "Guest";
+//     console.log(roomId, name)
+
+//   return (
+//     <div>
+        
+//     </div>
+//   )
+// }
+
+// export default Quiz

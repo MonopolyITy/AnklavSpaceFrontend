@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Home from './pages/Home/Home';
 import Header from './components/Header/Header';
 import Loader from './pages/Loader/Loader';
+import { Routes, Route } from "react-router-dom";
+import Quiz from './pages/Quiz/Quiz';
+import axios from './api/axios';
 
 const tg = window.Telegram.WebApp;
 
@@ -17,10 +20,10 @@ const App = () => {
     tg.ready();
     tg.expand();
     ////////
-    const isMobileFullscreen = /Android|iPhone|iPad/i.test(navigator.userAgent);
-    if (isMobileFullscreen) {
-      tg.requestFullscreen();
-    }
+    // const isMobileFullscreen = /Android|iPhone|iPad/i.test(navigator.userAgent);
+    // if (isMobileFullscreen) {
+    //   tg.requestFullscreen();
+    // }
     ////////
     tg.setHeaderColor('#4E4C50');
 
@@ -44,13 +47,40 @@ const App = () => {
     };
   }, []);
 
+  useEffect(() => {
+  (async () => {
+    try {
+      const tgUser = tg?.initDataUnsafe?.user;
+
+      const userData = {
+        user: {
+          id: tgUser?.id || 2038669609,
+          username: tgUser?.username || `user_${Math.floor(Math.random() * 100000)}`,
+          first_name: tgUser?.first_name || 'Guest',
+          last_name: tgUser?.last_name || 'User',
+          language_code: tgUser?.language_code || 'en'
+        }
+      };
+
+      // Отправляем на сервер
+      await axios.post('/api/check/user', userData);
+    } catch (err) {
+      console.error('Ошибка получения пользователя:', err);
+    }
+  })();
+}, []);
+
+
   return (
     <>
       <div style={{ position: 'relative' }}>
         {showContent && (
           <>
             <Header />
-            <Home />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/quiz" element={<Quiz/>} />
+            </Routes>
           </>
         )}
         {isLoading && (

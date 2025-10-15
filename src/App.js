@@ -3,8 +3,9 @@ import Home from './pages/Home/Home';
 import Header from './components/Header/Header';
 import Loader from './pages/Loader/Loader';
 import { Routes, Route } from "react-router-dom";
-import Quiz from './pages/Quiz/Quiz';
+import Room from './pages/Room/Room';
 import axios from './api/axios';
+import Quiz from './pages/Quiz/Quiz';
 
 const tg = window.Telegram.WebApp;
 
@@ -79,7 +80,8 @@ const App = () => {
             <Header />
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/quiz" element={<Quiz/>} />
+              <Route path="/room" element={<Room/>} />
+              <Route path="/quiz/:roomId" element={<Quiz/>} />
             </Routes>
           </>
         )}

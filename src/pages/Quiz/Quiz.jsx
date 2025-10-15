@@ -45,7 +45,7 @@ const Quiz = () => {
   };
 
   const validate = () => {
-    if (members.length !== maxMembers) return 'Список имён не совпадает с количеством участников';
+    if (members.length !== maxMembers) return 'Список имён не совпадает';
     for (let i = 0; i < members.length; i++) {
       if (!members[i] || !members[i].trim()) return 'Заполните все имена участников';
     }
@@ -72,7 +72,7 @@ const Quiz = () => {
       setResult(data);
     } catch (err) {
       console.error(err);
-      setError('Не удалось создать комнату. Проверьте сервер и попробуйте ещё раз.');
+      setError('Не удалось создать комнату.');
     } finally {
       setCreating(false);
     }

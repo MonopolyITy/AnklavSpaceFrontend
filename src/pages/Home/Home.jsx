@@ -12,24 +12,26 @@ const Home = () => {
     const { start_param: startParam } =
       window.Telegram?.WebApp?.initDataUnsafe || {};
 
-    if (!hasRedirected.current && startParam) {
-      const parts = startParam.split("_");
+    if (!hasRedirected.current && typeof startParam === "string") {
+      // пример: "quizfjskf4dnameVlad"
+      const match = startParam.match(/^quiz([a-zA-Z0-9]+)name([a-zA-Z]+)$/);
 
-      // варианты: quiz_ect9w4_Guest  или  ect9w4_Guest
-      const [roomId, name] =
-        parts.length === 3 ? parts : [null, parts[0], parts[1]];
+      if (match) {
+        const roomId = match[1];
+        const name = match[2];
 
-      // редиректим только если есть и roomId, и name
-      if (roomId && name) {
-        hasRedirected.current = true;
-        sessionStorage.setItem("startHandled", "true");
+        if (roomId && name) {
+          hasRedirected.current = true;
+          sessionStorage.setItem("startHandled", "true");
 
-        navigate(`/quiz/${roomId}?name=${encodeURIComponent(name)}`, {
-          replace: true,
-        });
+          navigate(`/quiz/${roomId}?name=${encodeURIComponent(name)}`, {
+            replace: true,
+          });
+        }
       }
     }
   }, [navigate]);
+
 
   return (
     <div style={{margin: "20px"}}>

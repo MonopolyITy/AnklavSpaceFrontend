@@ -85,7 +85,7 @@ const Room = () => {
     const roomId = result.roomId;
     const first = result.members[0];
 
-    const joinPath = (name) => `/quiz/${roomId}?name=${encodeURIComponent(name)}`;
+    const joinPath = (name) => `quiz${roomId}name${encodeURIComponent(name)}`;
     const quizPath = (name) => `/quiz/${roomId}?name=${encodeURIComponent(name)}`; // для первого — Link (React Router)
 
     const TG_BASE = 'https://t.me/anklavspacebot/anklav?startapp=';

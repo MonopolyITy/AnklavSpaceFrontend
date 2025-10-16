@@ -32,11 +32,11 @@ const Home = () => {
         const roomId = match[1];
         let name = match[2];
 
+        name = name.replace(/&/g, " ");
+
         if (name.startsWith("us")) {
           name = fromLatin(name.slice(2));
         }
-
-        name = name.replace(/&/g, " ");
 
         if (roomId && name) {
           hasRedirected.current = true;

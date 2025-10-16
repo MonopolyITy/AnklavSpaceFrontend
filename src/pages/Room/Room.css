@@ -85,7 +85,7 @@
 }
 
 .quiz__submit[disabled] {
-  background: #819ab8;
+  background: #4E4C50;
   cursor: not-allowed;
 }
 

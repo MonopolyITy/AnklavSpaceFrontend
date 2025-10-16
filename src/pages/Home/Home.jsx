@@ -1,6 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
+import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import { Link } from "react-router-dom";
+
+const translit = new CyrillicToTranslit({ preset: 'uk' })
+
+// Латиница → кириллица (обратное)
+const fromLatin = (text) => translit.reverse(text);
 
 const Home = () => {
 
@@ -20,18 +26,24 @@ const Home = () => {
 
     if (typeof startParam === "string") {
       // пример: quizfjskf4dnameVlad
-      const match = startParam.match(/^quiz([a-zA-Z0-9]+)name([a-zA-Z]+)$/);
+      const match = startParam.match(/^quiz([a-zA-Z0-9]+)name(.+)$/);
 
       if (match) {
         const roomId = match[1];
-        const name = match[2];
+        let name = match[2];
+
+        if (name.startsWith("us")) {
+          name = fromLatin(name.slice(2));
+        }
+
+        name = name.replace(/&/g, " ");
 
         if (roomId && name) {
           hasRedirected.current = true;
           sessionStorage.setItem("startHandled", "true");
 
           // Не редиректим, если уже на нужной странице
-          const targetPath = `/quiz/${roomId}?name=${encodeURIComponent(name)}`;
+          const targetPath = `/quiz/${roomId}?name=${name}`;
           if (location.pathname + location.search !== targetPath) {
             navigate(targetPath, { replace: true });
           }

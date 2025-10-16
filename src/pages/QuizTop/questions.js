@@ -1,4 +1,4 @@
-export const questions = [
+const questions = [
   {
     id: 0,
     text: "Привет! Я помогу рассчитать справедливое распределение долей между партнёрами. Этот тест занимает 5–7 минут.",
@@ -61,3 +61,6 @@ export const questions = [
     options: [{ label: "Понятно, поехали", next: 1 }]
   },
 ];
+
+
+export default questions;

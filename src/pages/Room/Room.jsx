@@ -1,7 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import { Link } from 'react-router-dom';
 import axios from '../../api/axios';
 import './Room.css';
+
+const translit = new CyrillicToTranslit({ preset: 'uk' })
+
+// Кириллица → латиница (с сохранением регистра и пробелов)
+const toLatin = (text) =>
+translit.transform(text).replace(/[^A-Za-z0-9 ]/g, '').trim();
+
+// Латиница → кириллица (обратное)
+// const fromLatin = (text) => translit.reverse(text);
 
 const Room = () => {
   // 1) Берём имя из Telegram (фолбэк: Guest)
@@ -78,6 +88,10 @@ const Room = () => {
     }
   };
 
+  function spaceToZero(text) {
+  return text.replace(/ /g, '&');
+}
+
   // собираем ссылки после успешного создания
   const built = useMemo(() => {
     if (!result?.roomId || !Array.isArray(result?.members)) return null;
@@ -85,7 +99,12 @@ const Room = () => {
     const roomId = result.roomId;
     const first = result.members[0];
 
-    const joinPath = (name) => `quiz${roomId}name${encodeURIComponent(name)}`;
+    const joinPath = (name) => {
+    const latin = toLatin(name);
+    // сравнение: если строки различаются (например, разные символы)
+    const prefix = latin.toLowerCase() !== name.toLowerCase() ? 'us' : '';
+    return `quiz${roomId}name${spaceToZero(prefix + latin)}`;
+  };
     const quizPath = (name) => `/quiz/${roomId}?name=${encodeURIComponent(name)}`; // для первого — Link (React Router)
 
     const TG_BASE = 'https://t.me/anklavspacebot/anklav?startapp=';

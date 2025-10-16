@@ -32,7 +32,7 @@ const Home = () => {
         const roomId = match[1];
         let name = match[2];
 
-        name = name.replace(/&/g, " ");
+        name = name.replace(/0/g, " ");
 
         if (name.startsWith("us")) {
           const parts = name.slice(2).split(" ");

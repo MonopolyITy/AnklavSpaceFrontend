@@ -89,7 +89,7 @@ const Room = () => {
   };
 
   function spaceToZero(text) {
-  return text.replace(/ /g, '&');
+  return text.replace(/ /g, '0');
 }
 
   // собираем ссылки после успешного создания

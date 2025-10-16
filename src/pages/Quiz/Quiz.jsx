@@ -56,105 +56,6 @@ export default function Quiz() {
     setShowErrors(false);
   };
 
-  // Парсер чисел (поддержка запятых и знака %)
-  const coerce = (v) => {
-    if (typeof v === 'number' && Number.isFinite(v)) return v;
-    if (typeof v !== 'string') return 0;
-    const s = v.trim().replace(',', '.').replace('%', '');
-    const m = s.match(/-?\d+(?:\.\d+)?/);
-    const n = m ? parseFloat(m[0]) : NaN;
-    return Number.isFinite(n) ? n : 0;
-  };
-
-  const EPS = 0.5; // допустимая погрешность для суммы (в процентах)
-
-  // Утилиты для валидации/вывода
-  const parseTriple = (personName) => {
-    const econ = coerce(inputs?.[personName]?.econ);
-    const human = coerce(inputs?.[personName]?.human);
-    const social = coerce(inputs?.[personName]?.social);
-    const sum = econ + human + social;
-    return { econ, human, social, sum };
-  };
-
-  const getPersonErrors = (triple) => {
-    const msgs = [];
-    if (Math.abs(triple.sum - 100) > EPS) {
-      msgs.push(`Сумма должна быть 100% (сейчас ${Math.round(triple.sum)}%)`);
-    }
-    const outOfRange = (
-      triple.econ < 0 || triple.human < 0 || triple.social < 0 ||
-      triple.econ > 100 || triple.human > 100 || triple.social > 100
-    );
-    if (outOfRange) msgs.push('Каждое значение 0–100%');
-    return msgs;
-  };
-
-  const isFormValid = () => {
-    for (const name of orderedNames) {
-      const errs = getPersonErrors(parseTriple(name));
-      if (errs.length) return false;
-    }
-    return true;
-  };
-
-  const handleInputChange = (personName, field, value) => {
-    setInputs((prev) => ({
-      ...prev,
-      [personName]: { ...prev[personName], [field]: value },
-    }));
-    // если ошибки уже показаны, пересчитывать на лету — логика остаётся
-    if (showErrors) {
-      // просто форсируем ререндер через setState выше; вычисления делаем при рендере
-    }
-  };
-
-  const toNums = (obj = {}) => ({
-    econ: coerce(obj.econ),
-    human: coerce(obj.human),
-    social: coerce(obj.social),
-  });
-
-  const handleSubmitInputs = async () => {
-    setServerError("");
-    setShowErrors(true);
-    if (!isFormValid()) return; // блокируем отправку, пока не исправят
-
-    try {
-      setIsSubmitting(true);
-      const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
-
-      const selfName = orderedNames[0] || nameFromQuery;
-      const partners = orderedNames.slice(1);
-
-      const payload = {
-        id: userId != null ? String(userId) : undefined,
-        name: selfName,
-        self_input: toNums(inputs[selfName]),
-        partners_input: partners.map((p) => ({
-          partnerName: p,
-          ...toNums(inputs[p]),
-        })),
-      };
-
-      await axios.post(`/api/rooms/${roomId}/answer`, payload);
-      setIsFinished(true);
-    } catch (e) {
-      console.error('Не удалось отправить ответы:', e);
-      const status = e?.response?.status;
-      const msg = e?.response?.data?.error;
-      if (status === 400) {
-        setServerError(`{"error": "${msg || 'Пользователь с таким ID или именем уже добавлен'}"}`);
-      } else if (status === 404) {
-        setServerError(`{"error": "${msg || 'Комната не найдена'}"}`);
-      } else {
-        setServerError('{"error": "Не удалось отправить ответы. Попробуйте ещё раз."}');
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   // Экран после успешной отправки
   if (isFinished) {
     return (
@@ -185,84 +86,138 @@ export default function Quiz() {
     );
   }
 
-  // После последнего вопроса — ввод чисел
+  // После последнего вопроса — ввод распределения по капиталам
   if (currentId === 4) {
+    const LABELS = {
+      econ: 'Экономический',
+      human: 'Человеческий',
+      social: 'Социальный',
+    };
+
+    // вспомогательные функции
+    const coerce = (v) => parseFloat(String(v).replace(',', '.')) || 0;
+
+    const sumCapital = (cap) =>
+      orderedNames.reduce((s, name) => s + coerce(inputs[cap]?.[name]), 0);
+
+    const getCapitalError = (cap) => {
+      const sum = sumCapital(cap);
+      if (Math.abs(sum - 100) > 0.5)
+        return `Сумма по ${LABELS[cap].toLowerCase()} капиталу должна быть 100%`;
+      const outOfRange = orderedNames.some(name => {
+        const v = coerce(inputs[cap]?.[name]);
+        return v < 0 || v > 100;
+      });
+      if (outOfRange) return 'Каждое значение должно быть в диапазоне 0–100%';
+      return null;
+    };
+
+    const handleInputChange = (cap, name, value) => {
+      setInputs(prev => ({
+        ...prev,
+        [cap]: { ...(prev[cap] || {}), [name]: value }
+      }));
+    };
+
+    const handleSubmitInputs = async () => {
+      setServerError("");
+      setShowErrors(true);
+      if (['econ', 'human', 'social'].some((cap) => getCapitalError(cap))) return;
+
+      try {
+        setIsSubmitting(true);
+        const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+
+        const payload = {
+          id: userId != null ? String(userId) : undefined,
+          name: nameFromQuery,
+          self_input: {
+            econ: coerce(inputs.econ?.[nameFromQuery]),
+            human: coerce(inputs.human?.[nameFromQuery]),
+            social: coerce(inputs.social?.[nameFromQuery]),
+          },
+          partners_input: orderedNames
+            .filter(name => name !== nameFromQuery)
+            .map(name => ({
+              partnerName: name,
+              econ: coerce(inputs.econ?.[name]),
+              human: coerce(inputs.human?.[name]),
+              social: coerce(inputs.social?.[name]),
+            })),
+        };
+
+        await axios.post(`/api/rooms/${roomId}/answer`, payload);
+        setIsFinished(true);
+      } catch (e) {
+        console.error('Не удалось отправить ответы:', e);
+        const status = e?.response?.status;
+        const msg = e?.response?.data?.error;
+        if (status === 400) {
+          setServerError(`{"error": "${msg || 'Пользователь с таким ID или именем уже добавлен'}"}`);
+        } else if (status === 404) {
+          setServerError(`{"error": "${msg || 'Комната не найдена'}"}`);
+        } else {
+          setServerError('{"error": "Не удалось отправить ответы. Попробуйте ещё раз."}');
+        }
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
     return (
       <div style={{ padding: 20 }}>
-        <h3>
-          Оцени вклад свой и партнёров по трём капиталам — экономическому, человеческому и
-          социальному — в сумме 100% на каждого.
+        <h3 style={{marginBottom: "20px"}}>
+          Распредели 100% по каждому капиталу между всеми участниками
         </h3>
 
         {serverError && (
-          <pre style={{ background: '#fff3f3', border: '1px solid #f3caca', padding: '8px', borderRadius: 6 }}>
-{serverError}
+          <pre style={{ background: '#fff3f3', border: '1px solid #f3caca', padding: 8, borderRadius: 6 }}>
+            {serverError}
           </pre>
         )}
 
-        {orderedNames.map((personName, i) => {
-          const triple = parseTriple(personName);
-          const personErrors = showErrors ? getPersonErrors(triple) : [];
+        {['econ', 'human', 'social'].map((cap) => (
+          <div key={cap} style={{ marginBottom: 20 }}>
+            <h4 style={{ marginBottom: 10, fontSize: "16px" }}>{LABELS[cap]} капитал</h4>
 
-          const fieldHasError = (field) => {
-            if (!showErrors) return false;
-            const v = triple[field];
-            return v < 0 || v > 100;
-          };
-
-          return (
-            <div key={personName} style={{ marginBottom: 10, marginTop: 10 }}>
-              <p style={{ fontSize: 14 }}>{i === 0 ? `${personName} (вы)` : personName}</p>
-              <div style={{ display: 'flex', gap: 10, justifyContent: 'space-between' }}>
-                {['econ', 'human', 'social'].map((field) => (
-                  <input
-                    key={field}
-                    type="number"
-                    placeholder={field}
-                    step="any"
-                    inputMode="numeric"
-                    value={(inputs[personName] && inputs[personName][field]) || ''}
-                    onChange={(e) => handleInputChange(personName, field, e.target.value)}
-                    style={{
-                      width: '100%',
-                      height: '40px',
-                      marginTop: '10px',
-                      padding: 5,
-                      borderRadius: 5,
-                      border: fieldHasError(field) ? '1px solid #b00020' : '1px solid #4e4c501b',
-                      outline: 'none',
-                    }}
-                  />
-                ))}
+            {orderedNames.map((name) => (
+              <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                <span style={{ width: 100, fontSize: 14 }}>{name}</span>
+                <input
+                  type="number"
+                  step="any"
+                  inputMode="numeric"
+                  placeholder="%"
+                  value={(inputs[cap] && inputs[cap][name]) || ''}
+                  onChange={(e) => handleInputChange(cap, name, e.target.value)}
+                  style={{
+                    width: '100%',
+                    height: 38,
+                    padding: 5,
+                    borderRadius: 5,
+                    border: '1px solid #4e4c501b',
+                  }}
+                />
               </div>
+            ))}
 
-              {showErrors && personErrors.length > 0 && (
-                <div style={{ marginTop: 6 }}>
-                  <ul style={{
-                    margin: 0,
-                    color: '#b00020',
-                    fontSize: 12,
-                    lineHeight: 1.3,
-                  }}>
-                    {personErrors.map((msg, idx) => (
-                      <li key={idx}>{msg}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <div style={{ fontSize: 12, opacity: 0.7, marginTop: 4 }}>Сумма: {Math.round(triple.sum || 0)}%</div>
+            {showErrors && getCapitalError(cap) && (
+              <div style={{ color: '#b00020', fontSize: 12, marginTop: 4 }}>
+                {getCapitalError(cap)}
+              </div>
+            )}
+            <div style={{ fontSize: 12, opacity: 0.7, marginTop: 2 }}>
+              Сумма: {Math.round(sumCapital(cap))}%
             </div>
-          );
-        })}
+          </div>
+        ))}
 
         <button
           onClick={handleSubmitInputs}
           disabled={isSubmitting}
           style={{
-            marginTop: 10,
             width: '100%',
-            height: '40px',
+            height: 40,
             background: '#F1EEDB',
             color: 'black',
             border: 'none',

@@ -26,7 +26,7 @@ const Home = () => {
 
     if (typeof startParam === "string") {
       // пример: quizfjskf4dnameVlad
-      const match = startParam.match(/^quiz([a-zA-Z0-9]+)name(.+)$/);
+      const match = startParam.match(/^quiz([a-zA-Z0-9]+)name([^?]+)$/);
 
       if (match) {
         const roomId = match[1];

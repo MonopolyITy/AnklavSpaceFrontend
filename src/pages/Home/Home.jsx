@@ -6,11 +6,7 @@ import { Link } from "react-router-dom";
 const translit = new CyrillicToTranslit({ preset: 'uk' })
 
 // Латиница → кириллица (обратное)
-const fromLatin = (text) =>
-  text
-    .split(" ")
-    .map(word => translit.reverse(word))
-    .join(" ");
+const fromLatin = (text) => translit.reverse(text);
 
 const Home = () => {
 
@@ -39,7 +35,8 @@ const Home = () => {
         name = name.replace(/&/g, " ");
 
         if (name.startsWith("us")) {
-          name = fromLatin(name.slice(2));
+          const parts = name.slice(2).split(" ");
+          name = parts.map(part => fromLatin(part)).join(" ");
         }
 
         if (roomId && name) {

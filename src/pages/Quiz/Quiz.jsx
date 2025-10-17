@@ -66,7 +66,7 @@ export default function Quiz() {
       <div style={{ padding: "0 20px" }}>
         <h3 style={{ marginTop: 0 }}>Отлично! Ответы отправлены.</h3>
         {savedLinks.length > 0 && (
-          <p style={{ fontSize: 14, lineHeight: 1.5, margin: "10px 0" }}>
+          <p style={{ fontSize: 14, lineHeight: 1.5, marginTop: "10px" }}>
             Поделитесь этими ссылками с партнёрами, чтобы они могли пройти тест.
           </p>
         )}

@@ -49,6 +49,19 @@ export default function Quiz() {
       });
   }, [roomId, nameFromQuery]);
 
+  useEffect(() => {
+    if (!isFinished) return;
+    try {
+      const links = JSON.parse(localStorage.getItem('anklav_partner_links') || '[]');
+      if (Array.isArray(links) && links.length > 0) {
+        localStorage.removeItem('anklav_partner_links');
+      }
+    } catch {
+      // на случай битого JSON просто чистим
+      localStorage.removeItem('anklav_partner_links');
+    }
+  }, [isFinished]);
+
   const currentQuestion = questions.find((q) => q.id === currentId);
 
   const handleOptionClick = (nextId) => {
@@ -61,12 +74,6 @@ export default function Quiz() {
   if (isFinished) {
     // читаем ссылки из localStorage
     const savedLinks = JSON.parse(localStorage.getItem('anklav_partner_links') || '[]');
-
-    useEffect(() => {
-      if (savedLinks.length > 0) {
-        localStorage.removeItem('anklav_partner_links');
-      }
-    }, []);
 
     return (
       <div style={{ padding: "0 20px" }}>

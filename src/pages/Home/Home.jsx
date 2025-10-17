@@ -54,6 +54,19 @@ const Home = () => {
   }, [navigate, location]);
 
 
+  // Предзагрузка и кэширование изображений
+  useEffect(() => {
+    const images = [
+      '/img/site.webp',
+      '/img/podcast1.webp',
+      '/img/podcast2.webp',
+    ];
+    images.forEach(src => {
+      const img = new window.Image();
+      img.src = src;
+    });
+  }, []);
+
   return (
     <div style={{margin: "20px"}}>
       <div>
@@ -69,13 +82,48 @@ const Home = () => {
         </div>
       </div>
 
-      <div style={{marginTop: "20px"}}>
-        <img style={{borderRadius: "5px"}} src="/img/site.webp" alt="Banner" loading="lazy" decoding="async" width="100%" height="auto" />
-      </div>
+      <a href='https://anklav.legal' target="_blank" rel="noopener noreferrer">
+        <img
+          style={{borderRadius: "5px", marginTop: "20px"}}
+          src="/img/site.webp"
+          alt="Banner"
+          fetchpriority="high"
+          decoding="async"
+          width="100%"
+          height="auto"
+        />
+      </a>
 
-      <div style={{display: "flex", justifyContent: "space-between", marginTop: "20px"}}>
-        <img style={{borderRadius: "5px", width: "calc(50% - 5px)"}} src="/img/podcast1.webp" alt="Banner" loading="lazy" decoding="async" />
-        <img style={{borderRadius: "5px", width: "calc(50% - 5px)"}} src="/img/podcast2.webp" alt="Banner" loading="lazy" decoding="async" />
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
+        <a
+          href="https://www.youtube.com/watch?v=dsua81jPGtM"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ width: "calc(50% - 5px)", display: "block" }}
+        >
+          <img
+            style={{ borderRadius: "5px", width: "100%", display: "block" }}
+            src="/img/podcast1.webp"
+            alt="Podcast 1"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </a>
+
+        <a
+          href="https://vk.com/video-230373811_456239036"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ width: "calc(50% - 5px)", display: "block" }}
+        >
+          <img
+            style={{ borderRadius: "5px", width: "100%", display: "block" }}
+            src="/img/podcast2.webp"
+            alt="Podcast 2"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </a>
       </div>
 
     </div>

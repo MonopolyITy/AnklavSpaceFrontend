@@ -20,7 +20,7 @@ const App = () => {
 
     tg.ready();
     tg.expand();
-    ////////
+    // ////////
       const isMobileFullscreen = /Android|iPhone|iPad/i.test(navigator.userAgent);
       if (isMobileFullscreen) {
         tg.requestFullscreen();
@@ -78,11 +78,13 @@ const App = () => {
         {showContent && (
           <>
             <Header />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/room" element={<Room/>} />
-              <Route path="/quiz/:roomId" element={<Quiz/>} />
-            </Routes>
+            <div style={{marginTop: "96px"}}> 
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/room" element={<Room/>} />
+                <Route path="/quiz/:roomId" element={<Quiz/>} />
+              </Routes>
+            </div>
           </>
         )}
         {isLoading && (

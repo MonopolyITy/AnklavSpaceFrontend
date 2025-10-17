@@ -10,6 +10,14 @@
   animation: skeleton-loading 1.2s infinite linear;
 }
 
+img {
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+}
+img[src] {
+  opacity: 1;
+}
+
 @keyframes skeleton-loading {
   0% {
     background-position: 200% 0;

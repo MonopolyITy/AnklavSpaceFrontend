@@ -56,9 +56,24 @@ const Room = () => {
 
   const validate = () => {
     if (members.length !== maxMembers) return 'Список имён не совпадает';
-    for (let i = 0; i < members.length; i++) {
-      if (!members[i] || !members[i].trim()) return 'Заполните все имена участников';
+    // Очищаем имена: заменяем множественные пробелы, trim, и валидируем
+    const cleaned = members.map(name =>
+      (name ?? '').replace(/\s+/g, ' ').trim()
+    );
+    // Проверяем только буквы и пробелы
+    const nameRegex = /^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ\s]+$/;
+    for (let i = 0; i < cleaned.length; i++) {
+      if (!cleaned[i]) {
+        setMembers(cleaned);
+        return 'Заполните все имена участников';
+      }
+      if (!nameRegex.test(cleaned[i])) {
+        setMembers(cleaned);
+        return 'Имена должны содержать только буквы';
+      }
     }
+    // Сохраняем очищённые имена, если всё ок
+    setMembers(cleaned);
     return '';
   };
 
@@ -78,10 +93,11 @@ const Room = () => {
         maxMembers,
         members: members.map(m => {
           const original = m.trim();
-          const latin = toLatin(original);
+          const cleaned = original.replace(/\s+/g, ' ').trim();
+          const latin = toLatin(cleaned);
 
-          // Проверяем, отличается ли исходное имя от переведённого
-          const needsPrefix = latin.toLowerCase() !== original.toLowerCase();
+          // Проверяем, отличается ли исходное имя от переведённого (с учётом очищенного)
+          const needsPrefix = latin.toLowerCase() !== cleaned.toLowerCase();
           const finalName = needsPrefix ? `us${latin}` : latin;
 
           return finalName;

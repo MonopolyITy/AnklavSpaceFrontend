@@ -13,6 +13,7 @@ export default function Quiz() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
   const [showErrors, setShowErrors] = useState(false); // показывать ошибки только после сабмита
+  const [copiedMap, setCopiedMap] = useState({});
 
   const { roomId } = useParams();
   const [searchParams] = useSearchParams();
@@ -58,13 +59,67 @@ export default function Quiz() {
 
   // Экран после успешной отправки
   if (isFinished) {
+    // читаем ссылки из localStorage
+    const savedLinks = JSON.parse(localStorage.getItem('anklav_partner_links') || '[]');
+
     return (
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: "0 20px" }}>
         <h3 style={{ marginTop: 0 }}>Отлично! Ответы отправлены.</h3>
+        <p style={{ fontSize: 14, lineHeight: 1.5, margin: "10px 0" }}>
+          Поделитесь этими ссылками с партнёрами, чтобы они могли пройти тест.
+        </p>
+
+        {savedLinks.map(({ name, url }) => {
+          const handleCopy = async () => {
+            try {
+              await navigator.clipboard.writeText(url);
+            } catch {
+              const dummy = document.createElement('textarea');
+              dummy.value = url;
+              dummy.setAttribute('readonly', '');
+              dummy.style.position = 'absolute';
+              dummy.style.left = '-9999px';
+              document.body.appendChild(dummy);
+              dummy.select();
+              document.execCommand('copy');
+              document.body.removeChild(dummy);
+            }
+
+            setCopiedMap((prev) => ({ ...prev, [name]: true }));
+            setTimeout(() => {
+              setCopiedMap((prev) => ({ ...prev, [name]: false }));
+            }, 1000);
+          };
+
+          return (
+            <button
+              key={name}
+              onClick={handleCopy}
+              style={{
+                width: "100%",
+                
+                background: copiedMap[name] ? "#3D8C3D" : "#4E4C50",
+                color: "white",
+                border: "none",
+                marginBottom: "10px",
+                borderRadius: 5,
+                padding: "10px 16px",
+                textAlign: "center",
+                cursor: "pointer",
+                fontSize: 14,
+                transition: "background 0.3s ease"
+              }}
+            >
+              {copiedMap[name] ? "✅ Скопировано" : `🔗 ${name}`}
+            </button>
+          );
+        })}
+        
         <p style={{ fontSize: 14, lineHeight: 1.5 }}>
           Когда последний партнёр завершит тест, все участники получат уведомление с
           усреднёнными результатами и финальным распределением долей.
         </p>
+
         <Link
           to="/"
           style={{
@@ -165,7 +220,7 @@ export default function Quiz() {
     };
 
     return (
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: "0 20px" }}>
         <h3 style={{marginBottom: "20px"}}>
           Распредели 100% по каждому капиталу между всеми участниками
         </h3>
@@ -194,6 +249,7 @@ export default function Quiz() {
                     width: '100%',
                     height: 38,
                     padding: 5,
+                    marginLeft: "5px",
                     borderRadius: 5,
                     border: '1px solid #4e4c501b',
                   }}
@@ -235,7 +291,7 @@ export default function Quiz() {
 
   // Экран вопросов/опций
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: "0 20px" }}>
       <p style={{ whiteSpace: 'pre-line' }}>{currentQuestion.text}</p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 20 }}>
         {currentQuestion.options.map((opt, i) => (

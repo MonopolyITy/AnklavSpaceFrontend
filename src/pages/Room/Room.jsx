@@ -80,6 +80,7 @@ const Room = () => {
       };
       const { data } = await axios.post('/api/rooms/create', payload);
       setResult(data);
+      setMembers([firstNameFromTG, '', '', ''].slice(0, maxMembers));
     } catch (err) {
       console.error(err);
       setError('Не удалось создать комнату.');
@@ -119,22 +120,15 @@ const Room = () => {
     };
   }, [result]);
 
-  const copyToClipboard = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      // фолбэк без alert
-      const dummy = document.createElement('textarea');
-      dummy.value = text;
-      dummy.setAttribute('readonly', '');
-      dummy.style.position = 'absolute';
-      dummy.style.left = '-9999px';
-      document.body.appendChild(dummy);
-      dummy.select();
-      document.execCommand('copy');
-      document.body.removeChild(dummy);
+  useEffect(() => {
+    if (built?.externalLinks?.length > 0) {
+      const links = built.externalLinks.map(link => ({
+        name: link.name,
+        url: link.url
+      }));
+      localStorage.setItem('anklav_partner_links', JSON.stringify(links));
     }
-  };
+  }, [built]);
 
   return (
     <div className="quiz">
@@ -189,39 +183,17 @@ const Room = () => {
         <div className="quiz__card">
           <div className="quiz__card-title">Комната создана</div>
           <div className="quiz__card-row">
-            ID комнаты: <code>{result.roomId}</code>
-          </div>
-          <div className="quiz__card-row">
             Участники: {Array.isArray(result.members) ? result.members.join(', ') : ''}
           </div>
 
           {built && (
             <div className="quiz__actions">
               <div>
-                <div className="quiz__label quiz__label--strong">1) Ваша кнопка</div>
                 <Link to={built.firstStartPath} className="quiz__start-btn">
                   Начать тест
                 </Link>
               </div>
 
-              {built.externalLinks.length > 0 && (
-                <div>
-                  <div className="quiz__label quiz__label--strong">2) Ссылки для партнёров</div>
-                  <div className="quiz__copy-list">
-                    {built.externalLinks.map(({ name, url }) => (
-                      <div key={name} className="quiz__copy-row">
-                        <button
-                          onClick={() => copyToClipboard(url)}
-                          className="quiz__copy-btn"
-                          type="button"
-                        >
-                          {name} 🔗
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           )}
         </div>
@@ -231,3 +203,41 @@ const Room = () => {
 };
 
 export default Room;
+
+
+
+// const copyToClipboard = async (text) => {
+//     try {
+//       await navigator.clipboard.writeText(text);
+//     } catch {
+//       // фолбэк без alert
+//       const dummy = document.createElement('textarea');
+//       dummy.value = text;
+//       dummy.setAttribute('readonly', '');
+//       dummy.style.position = 'absolute';
+//       dummy.style.left = '-9999px';
+//       document.body.appendChild(dummy);
+//       dummy.select();
+//       document.execCommand('copy');
+//       document.body.removeChild(dummy);
+//     }
+//   };
+
+// {built.externalLinks.length > 0 && (
+//                 <div>
+//                   <div className="quiz__label quiz__label--strong">2) Ссылки для партнёров</div>
+//                   <div className="quiz__copy-list">
+//                     {built.externalLinks.map(({ name, url }) => (
+//                       <div key={name} className="quiz__copy-row">
+//                         <button
+//                           onClick={() => copyToClipboard(url)}
+//                           className="quiz__copy-btn"
+//                           type="button"
+//                         >
+//                           {name} 🔗
+//                         </button>
+//                       </div>
+//                     ))}
+//                   </div>
+//                 </div>
+//               )}

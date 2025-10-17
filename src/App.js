@@ -30,10 +30,10 @@ const App = () => {
     tg.ready();
     tg.expand();
     // ////////
-      // const isMobileFullscreen = /Android|iPhone|iPad/i.test(navigator.userAgent);
-      // if (isMobileFullscreen) {
-      //   tg.requestFullscreen();
-      // }
+      const isMobileFullscreen = /Android|iPhone|iPad/i.test(navigator.userAgent);
+      if (isMobileFullscreen) {
+        tg.requestFullscreen();
+      }
     ////////
     tg.setHeaderColor('#4E4C50');
 

@@ -5,7 +5,6 @@
   right: 0;
   background: #4E4C50;
   color: white;
-  margin-top: var(--tg-app-top);
   padding: 5px 20px 20px ;
   display: flex;
   align-items: center;

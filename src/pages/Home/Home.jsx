@@ -1,12 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import { Link } from "react-router-dom";
-
-const translit = new CyrillicToTranslit({ preset: 'uk' })
-
-// Латиница → кириллица (обратное)
-const fromLatin = (text) => translit.reverse(text);
 
 const Home = () => {
 
@@ -33,11 +27,6 @@ const Home = () => {
         let name = match[2];
 
         name = name.replace(/0/g, " ");
-
-        if (name.startsWith("us")) {
-          const parts = name.slice(2).split(" ");
-          name = parts.map(part => fromLatin(part)).join(" ");
-        }
 
         if (roomId && name) {
           hasRedirected.current = true;

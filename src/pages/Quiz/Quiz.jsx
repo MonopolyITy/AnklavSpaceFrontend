@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import questions from "./questions";
 import { useParams, useSearchParams, Link } from "react-router-dom";
+import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import axios from '../../api/axios';
+
+const translit = new CyrillicToTranslit({ preset: 'uk' })
+
+// Латиница → кириллица (обратное)
+const fromLatin = (text) => translit.reverse(text);
 
 export default function Quiz() {
   const [currentId, setCurrentId] = useState(0);
@@ -112,7 +118,9 @@ export default function Quiz() {
                 transition: "background 0.3s ease"
               }}
             >
-              {copiedMap[name] ? "✅ Скопировано" : `🔗 ${name}`}
+              {copiedMap[name]
+                ? "✅ Скопировано"
+                : `🔗 ${name.startsWith('us') ? fromLatin(name.slice(2)) : name}`}
             </button>
           );
         })}
@@ -238,7 +246,9 @@ export default function Quiz() {
 
             {orderedNames.map((name) => (
               <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                <span style={{ width: 100, fontSize: 14 }}>{name}</span>
+                <span style={{ width: 100, fontSize: 14 }}>
+                  {name.startsWith('us') ? fromLatin(name.slice(2)) : name}
+                </span>
                 <input
                   type="number"
                   step="any"

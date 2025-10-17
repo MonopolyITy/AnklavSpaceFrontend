@@ -11,7 +11,7 @@ const toLatin = (text) =>
 translit.transform(text).replace(/[^A-Za-z0-9 ]/g, '').trim();
 
 // Латиница → кириллица (обратное)
-// const fromLatin = (text) => translit.reverse(text);
+const fromLatin = (text) => translit.reverse(text);
 
 const Room = () => {
   // 1) Берём имя из Telegram (фолбэк: Guest)
@@ -76,7 +76,16 @@ const Room = () => {
     try {
       const payload = {
         maxMembers,
-        members: members.map(m => m.trim()),
+        members: members.map(m => {
+          const original = m.trim();
+          const latin = toLatin(original);
+
+          // Проверяем, отличается ли исходное имя от переведённого
+          const needsPrefix = latin.toLowerCase() !== original.toLowerCase();
+          const finalName = needsPrefix ? `us${latin}` : latin;
+
+          return finalName;
+        }),
       };
       const { data } = await axios.post('/api/rooms/create', payload);
       setResult(data);
@@ -183,7 +192,17 @@ const Room = () => {
         <div className="quiz__card">
           <div className="quiz__card-title">Комната создана</div>
           <div className="quiz__card-row">
-            Участники: {Array.isArray(result.members) ? result.members.join(', ') : ''}
+            Участники: {Array.isArray(result.members)
+              ? result.members
+                  .map(name => {
+                    if (name.startsWith('us')) {
+                      // Убираем 'us' и переводим обратно
+                      return fromLatin(name.slice(2));
+                    }
+                    return name;
+                  })
+                  .join(', ')
+              : ''}
           </div>
 
           {built && (

@@ -1,10 +1,11 @@
 .header {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   background: #4E4C50;
   color: white;
+  margin-top: var(--tg-app-top);
   padding: 5px 20px 20px ;
   display: flex;
   align-items: center;

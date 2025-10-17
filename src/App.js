@@ -78,7 +78,7 @@ const App = () => {
         {showContent && (
           <>
             <Header />
-            <div style={{paddingTop: "76px"}}> 
+            <div style={{marginTop: "96px"}}> 
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/room" element={<Room/>} />

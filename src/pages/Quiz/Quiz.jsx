@@ -208,11 +208,11 @@ export default function Quiz() {
         const status = e?.response?.status;
         const msg = e?.response?.data?.error;
         if (status === 400) {
-          setServerError(`{"error": "${msg || 'Пользователь с таким ID или именем уже добавлен'}"}`);
+          setServerError(`Пользователь с таким ID уже добавлен`);
         } else if (status === 404) {
-          setServerError(`{"error": "${msg || 'Комната не найдена'}"}`);
+          setServerError(`Комната не найдена`);
         } else {
-          setServerError('{"error": "Не удалось отправить ответы. Попробуйте ещё раз."}');
+          setServerError('Не удалось отправить ответы');
         }
       } finally {
         setIsSubmitting(false);

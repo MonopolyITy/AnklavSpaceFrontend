@@ -1,6 +1,6 @@
 .header {
-  position: fixed;
-  top: 0;
+  position: absolute;
+  top: 2\0;
   left: 0;
   right: 0;
   background: #4E4C50;

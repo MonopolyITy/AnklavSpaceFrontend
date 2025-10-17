@@ -103,7 +103,6 @@ export default function Quiz() {
                 background: copiedMap[name] ? "#3D8C3D" : "#4E4C50",
                 color: "white",
                 border: "none",
-                marginBottom: "10px",
                 borderRadius: 5,
                 padding: "10px 16px",
                 marginTop: "10px",
@@ -118,7 +117,7 @@ export default function Quiz() {
           );
         })}
         
-        <p style={{ fontSize: 14, lineHeight: 1.5 }}>
+        <p style={{ fontSize: 14, lineHeight: 1.5, marginTop: "10px" }}>
           Когда последний партнёр завершит тест, все участники получат уведомление с
           усреднёнными результатами и финальным распределением долей.
         </p>

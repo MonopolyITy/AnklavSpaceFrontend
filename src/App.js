@@ -14,6 +14,15 @@ const App = () => {
   const [fadeOut, setFadeOut] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
+  // Очистка сохранённых партнёрских ссылок при каждом входе в приложение
+  useEffect(() => {
+    try {
+      localStorage.removeItem('anklav_partner_links');
+    } catch (e) {
+      console.warn('Не удалось очистить anklav_partner_links из localStorage:', e);
+    }
+  }, []);
+
   useEffect(() => {
     // Сразу делаем фон под лоадером
     document.body.style.backgroundColor = '#4E4C50';

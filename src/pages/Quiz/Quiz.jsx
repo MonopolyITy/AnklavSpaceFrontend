@@ -65,7 +65,7 @@ export default function Quiz() {
     return (
       <div style={{ padding: "0 20px" }}>
         <h3 style={{ marginTop: 0 }}>Отлично! Ответы отправлены.</h3>
-        {savedLinks.length === 0 && (
+        {savedLinks.length > 0 && (
           <p style={{ fontSize: 14, lineHeight: 1.5, margin: "10px 0" }}>
             Поделитесь этими ссылками с партнёрами, чтобы они могли пройти тест.
           </p>
@@ -106,6 +106,7 @@ export default function Quiz() {
                 marginBottom: "10px",
                 borderRadius: 5,
                 padding: "10px 16px",
+                marginTop: "10px",
                 textAlign: "center",
                 cursor: "pointer",
                 fontSize: 14,

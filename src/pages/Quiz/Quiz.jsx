@@ -62,12 +62,20 @@ export default function Quiz() {
     // читаем ссылки из localStorage
     const savedLinks = JSON.parse(localStorage.getItem('anklav_partner_links') || '[]');
 
+    useEffect(() => {
+      if (savedLinks.length > 0) {
+        localStorage.removeItem('anklav_partner_links');
+      }
+    }, []);
+
     return (
       <div style={{ padding: "0 20px" }}>
         <h3 style={{ marginTop: 0 }}>Отлично! Ответы отправлены.</h3>
-        <p style={{ fontSize: 14, lineHeight: 1.5, margin: "10px 0" }}>
-          Поделитесь этими ссылками с партнёрами, чтобы они могли пройти тест.
-        </p>
+        {savedLinks.length === 0 && (
+          <p style={{ fontSize: 14, lineHeight: 1.5, margin: "10px 0" }}>
+            Поделитесь этими ссылками с партнёрами, чтобы они могли пройти тест.
+          </p>
+        )}
 
         {savedLinks.map(({ name, url }) => {
           const handleCopy = async () => {

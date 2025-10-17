@@ -206,7 +206,6 @@ export default function Quiz() {
       } catch (e) {
         console.error('Не удалось отправить ответы:', e);
         const status = e?.response?.status;
-        const msg = e?.response?.data?.error;
         if (status === 400) {
           setServerError(`Пользователь с таким ID уже добавлен`);
         } else if (status === 404) {

@@ -65,11 +65,10 @@ const App = () => {
 
       const userData = {
         user: {
-          id: tgUser?.id || 2038669609,
-          username: tgUser?.username || `user_${Math.floor(Math.random() * 100000)}`,
+          id: tgUser?.id,
+          username: tgUser?.username,
           first_name: tgUser?.first_name || 'Guest',
-          last_name: tgUser?.last_name || 'User',
-          language_code: tgUser?.language_code || 'en'
+          language_code: tgUser?.language_code || 'ru'
         }
       };
 

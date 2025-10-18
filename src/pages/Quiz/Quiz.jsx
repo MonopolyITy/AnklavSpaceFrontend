@@ -11,6 +11,7 @@ const fromLatin = (text) => translit.reverse(text);
 
 export default function Quiz() {
   const [currentId, setCurrentId] = useState(0);
+  const [answers, setAnswers] = useState([]);
   // Данные ввода по именам участников: { [name]: { econ, human, social } }
   const [inputs, setInputs] = useState({});
   // Порядок имён на экране: [selfName, ...partners]
@@ -57,7 +58,10 @@ export default function Quiz() {
 
   const currentQuestion = questions.find((q) => q.id === currentId);
 
-  const handleOptionClick = (nextId) => {
+  const handleOptionClick = (nextId, selectedLabel) => {
+    if (currentQuestion.id >= 1 && currentQuestion.id !== 100) {
+      setAnswers(prev => [...prev, selectedLabel]);
+    }
     setCurrentId(nextId);
     setServerError("");
     setShowErrors(false);
@@ -196,6 +200,7 @@ export default function Quiz() {
         const payload = {
           id: userId != null ? String(userId) : undefined,
           name: nameFromQuery,
+          questions_answers: answers,
           self_input: {
             econ: coerce(inputs.econ?.[nameFromQuery]),
             human: coerce(inputs.human?.[nameFromQuery]),
@@ -308,7 +313,7 @@ export default function Quiz() {
         {currentQuestion.options.map((opt, i) => (
           <button
             key={i}
-            onClick={() => handleOptionClick(opt.next)}
+            onClick={() => handleOptionClick(opt.next, opt.label)}
             style={{
               background: '#F1EEDB',
               color: 'black',

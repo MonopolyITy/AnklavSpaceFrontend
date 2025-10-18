@@ -6,6 +6,7 @@ import { Routes, Route } from "react-router-dom";
 import Room from './pages/Room/Room';
 import axios from './api/axios';
 import Quiz from './pages/Quiz/Quiz';
+import Bid from './pages/Bid/Bid';
 
 const tg = window.Telegram.WebApp;
 
@@ -92,6 +93,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/room" element={<Room/>} />
                 <Route path="/quiz/:roomId" element={<Quiz/>} />
+                <Route path="/bid" element={<Bid/>}/>
               </Routes>
             </div>
           </>

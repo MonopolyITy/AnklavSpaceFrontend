@@ -177,7 +177,7 @@ const Room = () => {
             >
               3
             </button>
-            <Link className='quiz__segment-btn' style={{display: "flex", justifyContent: "center", alignItems: "center"}}>4+</Link>
+            <Link to="/bid" className='quiz__segment-btn' style={{display: "flex", justifyContent: "center", alignItems: "center"}}>4+</Link>
           </div>
         </div>
 

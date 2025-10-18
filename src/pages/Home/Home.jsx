@@ -66,9 +66,9 @@ const Home = () => {
             <p>КАК РАЗДЕЛИТЬ ДОЛИ В ПАРТНЕРСТВЕ?</p>
         </Link>
 
-        <div className="font-display" style={{marginTop: "10px", background: "#F1EEDB", borderRadius: "5px", color: "black", height: "50px", fontSize: "13px", display: "flex", justifyContent: "center", alignItems: "center"}}>
+        <Link to="/bid" className="font-display" style={{marginTop: "10px", background: "#F1EEDB", borderRadius: "5px", color: "black", height: "50px", fontSize: "13px", display: "flex", justifyContent: "center", alignItems: "center"}}>
             <p>ЗАПИСАТЬСЯ НА РАЗБОР ПАРТНЕРСТВА</p>
-        </div>
+        </Link>
       </div>
 
       <a href='https://anklav.legal' target="_blank" rel="noopener noreferrer">
